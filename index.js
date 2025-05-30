@@ -1,21 +1,22 @@
-//target our html container or div
-//fetch our products from the api
-//display the products in the container
-
+// Target elements
 const container = document.getElementById("products-container");
 const baseUrl = "https://fakestoreapi.com/products";
 const form = document.getElementById("product-form");
 const formMessage = document.getElementById("form-message");
 const resetBtn = document.getElementById("reset-all");
+const restoreBtn = document.getElementById("restore-products");
 
+// Load saved products or initialize
 let localProducts = JSON.parse(localStorage.getItem("products")) || [];
 
+// Save local products to storage
 const saveProducts = () => {
     localStorage.setItem("products", JSON.stringify(localProducts));
 };
 
+// Create and display a product card
 const createProductCard = (item, index, fromLocal = false) => {
-    let productCard = document.createElement("div");
+    const productCard = document.createElement("div");
     productCard.classList.add("product-card");
     productCard.setAttribute("data-index", index);
     productCard.setAttribute("data-source", fromLocal ? "local" : "api");
@@ -40,6 +41,7 @@ const createProductCard = (item, index, fromLocal = false) => {
     container.appendChild(productCard);
 };
 
+// Fetch products from the API
 const fetchProducts = async () => {
     try {
         const response = await fetch(baseUrl);
@@ -50,10 +52,10 @@ const fetchProducts = async () => {
     }
 };
 
+// Handle form submission
 form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // Grab field elements
     const titleEl = document.getElementById("title");
     const descriptionEl = document.getElementById("description");
     const imageEl = document.getElementById("image");
@@ -68,7 +70,6 @@ form.addEventListener("submit", (e) => {
 
     let errorMessage = "";
 
-    // Validation
     if (!title || !description || !image || !price) {
         errorMessage = "Please fill out all required fields.";
     } else if (isNaN(price)) {
@@ -89,39 +90,56 @@ form.addEventListener("submit", (e) => {
         brand
     };
 
-    // Save and display product
     localProducts.push(newProduct);
     saveProducts();
     createProductCard(newProduct, localProducts.length - 1, true);
-
-    // Reset form inputs (leave form visible)
     form.reset();
 
-    // Display success message
     formMessage.textContent = "Product added!";
     formMessage.style.color = "green";
     setTimeout(() => {
-    formMessage.textContent = "";
-}, 3000);
+        formMessage.textContent = "";
+    }, 3000);
 });
 
-
-
+// Reset all products and back them up
 resetBtn.addEventListener("click", () => {
+    localStorage.setItem("backupProducts", JSON.stringify(localProducts));
+
     container.innerHTML = "";
     localProducts = [];
     saveProducts();
     fetchProducts();
 });
 
+// Restore backed up products
+restoreBtn.addEventListener("click", () => {
+    const backup = JSON.parse(localStorage.getItem("backupProducts"));
+    if (backup && backup.length) {
+        localProducts = backup;
+        saveProducts();
+        container.innerHTML = "";
+        fetchProducts();
+        loadLocalProducts();
+
+        formMessage.textContent = "Products restored!";
+        formMessage.style.color = "green";
+    } else {
+        formMessage.textContent = "No backup to restore.";
+        formMessage.style.color = "red";
+    }
+});
+
+// Load locally stored products
 const loadLocalProducts = () => {
     localProducts.forEach((item, index) => createProductCard(item, index, true));
 };
 
+// Init
 fetchProducts();
 loadLocalProducts();
 
-// Floating emoji + theme switch (keep existing)
+// Floating emoji and theme switch
 const createFloatingEmoji = () => {
     const emoji = document.createElement('div');
     emoji.classList.add('floating-emoji');
