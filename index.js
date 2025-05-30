@@ -53,27 +53,59 @@ const fetchProducts = async () => {
 form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const title = document.getElementById("title").value.trim();
-    const description = document.getElementById("description").value.trim();
-    const image = document.getElementById("image").value.trim();
-    const price = parseFloat(document.getElementById("price").value);
-    const brand = document.getElementById("brand").value.trim();
+    // Grab field elements
+    const titleEl = document.getElementById("title");
+    const descriptionEl = document.getElementById("description");
+    const imageEl = document.getElementById("image");
+    const priceEl = document.getElementById("price");
+    const brandEl = document.getElementById("brand");
 
-    if (!title || !description || !image || isNaN(price)) {
-        formMessage.textContent = "Please fill all fields correctly.";
+    const title = titleEl.value.trim();
+    const description = descriptionEl.value.trim();
+    const image = imageEl.value.trim();
+    const price = priceEl.value.trim();
+    const brand = brandEl.value.trim();
+
+    let errorMessage = "";
+
+    // Validation
+    if (!title || !description || !image || !price) {
+        errorMessage = "Please fill out all required fields.";
+    } else if (isNaN(price)) {
+        errorMessage = "Price must be a valid number.";
+    }
+
+    if (errorMessage) {
+        formMessage.textContent = errorMessage;
         formMessage.style.color = "red";
         return;
     }
 
-    const newProduct = { title, description, image, price, brand };
+    const newProduct = {
+        title,
+        description,
+        image,
+        price: parseFloat(price),
+        brand
+    };
+
+    // Save and display product
     localProducts.push(newProduct);
     saveProducts();
     createProductCard(newProduct, localProducts.length - 1, true);
 
+    // Reset form inputs (leave form visible)
     form.reset();
+
+    // Display success message
     formMessage.textContent = "Product added!";
     formMessage.style.color = "green";
+    setTimeout(() => {
+    formMessage.textContent = "";
+}, 3000);
 });
+
+
 
 resetBtn.addEventListener("click", () => {
     container.innerHTML = "";
