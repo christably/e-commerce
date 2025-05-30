@@ -1,22 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bell's Shop</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bell's Shop</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <main>
     <section class="hero">
-    <div class="hero-text">
+      <div class="hero-text">
         <h2>Welcome to Bell's Shop</h2>
         <p>Find the best products just for you!</p>
-    </div>
-</section>
+      </div>
+    </section>
 
-<h1>Products</h1>
-<div id="theme-switch" title="Switch theme">💡</div>
-<div id="products-container"></div>
-    <script src="index.js"></script>
+    <section>
+      <h2>Add a New Product</h2>
+      <form id="product-form">
+        <label for="title">Product Name</label>
+        <input type="text" id="title" placeholder="Product Name" required />
+        
+        <label for="description">Description</label>
+        <input type="text" id="description" placeholder="Description" required />
+        
+        <label for="image">Image URL</label>
+        <input type="url" id="image" placeholder="Image URL" required />
+        
+        <label for="price">Price</label>
+        <input type="number" id="price" placeholder="Price" required />
+        
+        <label for="brand">Brand</label>
+        <input type="text" id="brand" placeholder="Brand" />
+        
+        <button type="submit">Add Product</button>
+      </form>
+      <p id="form-message"></p>
+      <button type="button" id="reset-all">Reset All</button>
+    </section>
+
+    <h1>Products</h1>
+    <div id="theme-switch" title="Switch theme">💡</div>
+    <div id="products-container"></div>
+  </main>
+
+  <script src="index.js"></script>
 </body>
 </html>
